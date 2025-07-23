@@ -91,10 +91,16 @@ public class AllEventHandlers {
                     currencyList.get(index).setWatch(true);
                     currencyList.get(index).setWatchRate(rate);
                     Launcher.setCurrencyList(currencyList);
+
+                    WatchTask watchTask = new WatchTask();
+                    watchTask.call();
+
                     Launcher.refreshPane();
                 }
             }
         } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
