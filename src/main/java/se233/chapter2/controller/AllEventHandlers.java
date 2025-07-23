@@ -1,5 +1,6 @@
 package se233.chapter2.controller;
 
+import javafx.scene.control.Alert;
 import javafx.scene.control.TextInputDialog;
 import se233.chapter2.Launcher;
 import se233.chapter2.model.Currency;
@@ -86,20 +87,24 @@ public class AllEventHandlers {
                 dialog.setHeaderText(null);
                 dialog.setGraphic(null);
                 Optional<String> retrievedRate = dialog.showAndWait();
-                if (retrievedRate.isPresent()) {
-                    double rate = Double.parseDouble(retrievedRate.get());
-                    currencyList.get(index).setWatch(true);
-                    currencyList.get(index).setWatchRate(rate);
-                    Launcher.setCurrencyList(currencyList);
+                if (retrievedRate.isPresent() && !retrievedRate.get().isEmpty()) {
+                    try {
+                        double rate = Double.parseDouble(retrievedRate.get());
+                        currencyList.get(index).setWatch(true);
+                        currencyList.get(index).setWatchRate(rate);
+                        Launcher.setCurrencyList(currencyList);
+                        new WatchTask().call();
+                        Launcher.refreshPane();
 
-                    WatchTask watchTask = new WatchTask();
-                    watchTask.call();
-
-                    Launcher.refreshPane();
+                    } catch (NumberFormatException e) {
+                        Alert alert = new Alert(Alert.AlertType.ERROR);
+                        alert.setTitle("Invalid Input");
+                        alert.setHeaderText("Invalid number format");
+                        alert.setContentText("Please enter a valid number for the watch rate.");
+                        alert.showAndWait();
+                    }
                 }
             }
-        } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
         }
