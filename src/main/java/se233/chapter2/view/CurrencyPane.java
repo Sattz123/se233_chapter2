@@ -13,6 +13,7 @@ import javafx.scene.layout.VBox;
 import se233.chapter2.controller.AllEventHandlers;
 import se233.chapter2.controller.draw.DrawCurrencyInfoTask;
 import se233.chapter2.controller.draw.DrawGraphTask;
+import se233.chapter2.controller.draw.DrawTopAreaTask;
 import se233.chapter2.model.Currency;
 
 import java.util.concurrent.ExecutionException;
@@ -87,24 +88,33 @@ public class CurrencyPane extends BorderPane {
 
     public void refreshPane(Currency currency) throws ExecutionException, InterruptedException {
         this.currency = currency;
+        ExecutorService executor = Executors.newFixedThreadPool(3);
+        try {
+            FutureTask<VBox> infoTask = new FutureTask<>(new DrawCurrencyInfoTask(currency));
+            FutureTask<VBox> graphTask = new FutureTask<>(new DrawGraphTask(currency));
+            FutureTask<HBox> topAreaFeature = new FutureTask<>(new DrawTopAreaTask(watch, unwatch, delete));
 
-        FutureTask<VBox> infoTask = new FutureTask<>(new DrawCurrencyInfoTask(currency));
-        FutureTask<VBox> graphTask = new FutureTask<>(new DrawGraphTask(currency));
 
-        ExecutorService executor = Executors.newFixedThreadPool(2);
+            executor.execute(infoTask);
+            executor.execute(graphTask);
+            executor.execute(topAreaFeature);
 
-        executor.execute(infoTask);
-        executor.execute(graphTask);
+            VBox currencyInfo = infoTask.get();
+            VBox currencyGraph = graphTask.get();
+            HBox topArea = topAreaFeature.get();
+//            executor.shutdown();
 
-        VBox currencyInfo = infoTask.get();
-        VBox currencyGraph = graphTask.get();
 
-        executor.shutdown();
+            this.setTop(topArea);
+            this.setLeft(currencyInfo);
+            this.setCenter(currencyGraph);
 
-        Pane topArea = genTopArea();
-        this.setTop(topArea);
-        this.setLeft(currencyInfo);
-        this.setCenter(currencyGraph);
+        } catch (Exception e) {
+           System.out.println(e);
+
+        }  finally {
+            executor.shutdown();
+        }
     }
 
     private Pane genInfoPane() {
