@@ -73,7 +73,7 @@ public class CurrencyPane extends BorderPane {
             public void handle(ActionEvent event) {AllEventHandlers.onUnwatch(currency.getShortCode());}
         });
         this.setPadding(new Insets(0));
-        this.setPrefSize(640, 300);
+        this.setPrefSize(800, 400);
         this.setStyle("-fx-border-color: black;");
         try {
             this.refreshPane(currency);

@@ -26,16 +26,16 @@ public class DrawGraphTask implements Callable<VBox> {
         VBox graphPane = new VBox(10);
         graphPane.setPadding(new Insets(0, 25, 5, 25));
         CategoryAxis xAxis = new CategoryAxis();
-        xAxis.setAutoRanging(false); // Stop it from skipping categories
-        xAxis.setTickLabelRotation(90); // Make labels vertical
-        xAxis.setTickLabelGap(5);       // Add gap
-        xAxis.setTickLabelFont(new Font("Arial", 8)); // Smaller font
-
-// Tell xAxis to use all the actual dates
-        List<String> categories = currency.getHistorical().stream()
-                .map(CurrencyEntity::getTimestamp)
-                .collect(Collectors.toList());
-        xAxis.setCategories(FXCollections.observableArrayList(categories));
+//        xAxis.setAutoRanging(false); // Stop it from skipping categories
+//        xAxis.setTickLabelRotation(90); // Make labels vertical
+//        xAxis.setTickLabelGap(5);       // Add gap
+//        xAxis.setTickLabelFont(new Font("Arial", 8)); // Smaller font
+//
+//// Tell xAxis to use all the actual dates
+//        List<String> categories = currency.getHistorical().stream()
+//                .map(CurrencyEntity::getTimestamp)
+//                .collect(Collectors.toList());
+//        xAxis.setCategories(FXCollections.observableArrayList(categories));
 
         NumberAxis yAxis = new NumberAxis();
         yAxis.setAutoRanging(true);
@@ -56,10 +56,11 @@ public class DrawGraphTask implements Callable<VBox> {
             yAxis.setTickUnit((maxY-minY)/2);
             lineChart.getData().add(series);
         }
-        ScrollPane scrollPane = new ScrollPane(lineChart);
-        scrollPane.setFitToHeight(true);
-        scrollPane.setFitToWidth(false);
-        graphPane.getChildren().add(scrollPane);
+//        ScrollPane scrollPane = new ScrollPane(lineChart);
+//        scrollPane.setFitToHeight(true);
+//        scrollPane.setFitToWidth(false);
+//        graphPane.getChildren().add(scrollPane);
+        graphPane.getChildren().add(lineChart);
         return graphPane;
     }
 }
